@@ -34,14 +34,16 @@ Luong_Attention_Udru_task/
 ## ⚙️ Installation
 
 ```bash
-git clone https://github.com/yourusername/Luong_Attention_Udru_task.git
-cd Luong_Attention_Udru_task
+git clone https://github.com/Bilal-javed-goraya-ml/Urdu_verse_line_generator.git
+cd Urdu_verse_line_generator
 
 # (Recommended) Create and activate a virtual environment
 conda create -n env python=3.12 -y
 conda activate env
 
 # Install dependencies
+
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu121
 pip install -r requirements.txt
 ```
 
@@ -108,7 +110,15 @@ Generated:
 ## 📈 Visuals
 
 <p align="center">
-  <img src="images/training_loss.png" width="500" />
+  <img src="images/test.png" width="500" />
+</p>
+
+<p align="center">
+  <img src="images/test1.png" width="500" />
+</p>
+
+<p align="center">
+  <img src="images/test2.png" width="500" />
 </p>
 
 ---

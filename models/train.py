@@ -74,57 +74,6 @@ class Decoder(nn.Module):
         output = self.fc(output)
         return output, hidden, cell
 
-
-# # Training Function
-# def train_model():
-#     # Config
-#     emb_size = 512
-#     hidden_size = 512
-#     batch_size = 8
-#     epochs = 100
-#     lr = 0.0001
-
-#     vocab = Vocab()
-#     train_data = MasraDataset('data/train.csv', vocab)
-#     train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, collate_fn=pad_batch)
-
-#     encoder = Encoder(vocab_size=len(vocab), emb_size=emb_size, hidden_size=hidden_size).to(device)
-#     decoder = Decoder(vocab_size=len(vocab), emb_size=emb_size, hidden_size=hidden_size).to(device)
-
-#     criterion = nn.CrossEntropyLoss(ignore_index=vocab.pad_idx)
-#     encoder_optimizer = optim.Adam(encoder.parameters(), lr=lr)
-#     decoder_optimizer = optim.Adam(decoder.parameters(), lr=lr)
-
-#     for epoch in range(epochs):
-#         encoder.train()
-#         decoder.train()
-#         epoch_loss = 0
-
-#         for src, trg in train_loader:
-#             src, trg = src.to(device), trg.to(device)
-#             encoder_optimizer.zero_grad()
-#             decoder_optimizer.zero_grad()
-
-#             encoder_outputs, hidden, cell = encoder(src)
-
-#             input_token = trg[:, 0]
-#             loss = 0
-
-#             for t in range(1, trg.size(1)):
-#                 output, hidden, cell = decoder(input_token, hidden, cell, encoder_outputs)
-#                 loss += criterion(output, trg[:, t])
-#                 input_token = trg[:, t]  # teacher forcing
-
-#             loss.backward()
-#             encoder_optimizer.step()
-#             decoder_optimizer.step()
-#             epoch_loss += loss.item() / trg.size(1)
-
-#         print(f"Epoch {epoch+1}/{epochs} | Loss: {epoch_loss / len(train_loader):.4f}")
-
-#     os.makedirs("trained", exist_ok=True)
-#     torch.save({"encoder": encoder.state_dict(), "decoder": decoder.state_dict()}, "trained/model.pt")
-#     print("Model saved to trained/model.pt")
 # Training Function
 def train_model():
     print("Starting training...")
