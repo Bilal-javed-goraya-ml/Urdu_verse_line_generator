@@ -123,7 +123,7 @@ if __name__ == "__main__":
     # Create and launch the app
     app = create_interface()
     
-    print("Starting Urdu Masra Generator Web App...")
+    print("Starting Urdu Verse line (Masra) Generator Web App...")
     print("The app will open in your browser automatically")
     
     app.launch(
