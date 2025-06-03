@@ -110,15 +110,15 @@ Generated:
 ## 📈 Visuals
 
 <p align="center">
-  <img src="images/test.png" width="500" />
+  <img src="images/test.png" width="1000" />
 </p>
 
 <p align="center">
-  <img src="images/test1.png" width="500" />
+  <img src="images/test1.png" width="1000" />
 </p>
 
 <p align="center">
-  <img src="images/test2.png" width="500" />
+  <img src="images/test2.png" width="1000" />
 </p>
 
 ---
