@@ -135,7 +135,7 @@ Generated:
 
 Developed with passion for Urdu poetry 🇵🇰
 
-> Inspired by the beauty and rhythm of **Milli Naghmay** and the creativity of AI.
+> Inspired by the beauty and rhythm of **Milli Naghmay & Qawali's** and the creativity of AI.
 
 ## 📜 License
 
