@@ -48,57 +48,111 @@ def load_model():
         return False, f"Error loading model: {str(e)}"
 
 
-def predict_sequence(input_text, loop_count, max_length=50):
-    """Predict sequence of masras with loop"""
-    global encoder, decoder, vocab
+# def predict_sequence(input_text, loop_count, max_length=50):
+#     """Predict sequence of masras with loop"""
+#     global encoder, decoder, vocab
     
+#     if encoder is None or decoder is None or vocab is None:
+#         return "❌ Model not loaded. Please load the model first."
+    
+#     if not input_text.strip():
+#         return "❌ Please enter a masra."
+    
+#     if loop_count < 1:
+#         return "❌ Loop count must be at least 1."
+    
+#     try:
+#         results = []
+#         current_input = input_text.strip()
+#         results.append(f"{current_input}")
+        
+#         for i in range(loop_count):
+#             # Predict next masra
+#             with torch.no_grad():
+#                 input_seq = vocab.encode(current_input)
+#                 src = torch.tensor(input_seq).unsqueeze(0).to(device)
+                
+#                 encoder_outputs, hidden, cell = encoder(src)
+#                 input_token = torch.tensor([vocab.sos_idx]).to(device)
+#                 decoded_words = []
+                
+#                 for _ in range(max_length):
+#                     output, hidden, cell = decoder(input_token, hidden, cell, encoder_outputs)
+#                     predicted_id = output.argmax(dim=-1).item()
+                    
+#                     if predicted_id == vocab.eos_idx:
+#                         break
+                        
+#                     if predicted_id not in {vocab.pad_idx, vocab.sos_idx, vocab.unk_idx}:
+#                         decoded_words.append(vocab.idx2word[predicted_id])
+                    
+#                     input_token = torch.tensor([predicted_id]).to(device)
+                
+#                 predicted_masra = " ".join(decoded_words) if decoded_words else "[Could not generate]"
+#                 results.append(f"{predicted_masra}")
+                
+#                 # Use the predicted masra as input for next iteration
+#                 current_input = predicted_masra
+                
+#                 # Stop if we couldn't generate anything meaningful
+#                 if predicted_masra == "[Could not generate]":
+#                     break
+        
+#         return "\n".join(results)
+    
+#     except Exception as e:
+#         return f"❌ Error during sequence prediction: {str(e)}"
+
+
+def predict_sequence(input_text, max_length=50):
+    """Predict sequence of masras until 'ختم' is predicted"""
+    global encoder, decoder, vocab
+
     if encoder is None or decoder is None or vocab is None:
         return "❌ Model not loaded. Please load the model first."
-    
+
     if not input_text.strip():
         return "❌ Please enter a masra."
-    
-    if loop_count < 1:
-        return "❌ Loop count must be at least 1."
-    
+
     try:
         results = []
         current_input = input_text.strip()
-        results.append(f"{current_input}")
-        
-        for i in range(loop_count):
-            # Predict next masra
+        results.append(current_input)
+
+        for _ in range(50):  # Max limit to avoid infinite loop
             with torch.no_grad():
                 input_seq = vocab.encode(current_input)
                 src = torch.tensor(input_seq).unsqueeze(0).to(device)
-                
+
                 encoder_outputs, hidden, cell = encoder(src)
                 input_token = torch.tensor([vocab.sos_idx]).to(device)
                 decoded_words = []
-                
+
                 for _ in range(max_length):
                     output, hidden, cell = decoder(input_token, hidden, cell, encoder_outputs)
                     predicted_id = output.argmax(dim=-1).item()
-                    
+
                     if predicted_id == vocab.eos_idx:
                         break
-                        
+
                     if predicted_id not in {vocab.pad_idx, vocab.sos_idx, vocab.unk_idx}:
                         decoded_words.append(vocab.idx2word[predicted_id])
-                    
+
                     input_token = torch.tensor([predicted_id]).to(device)
-                
+
                 predicted_masra = " ".join(decoded_words) if decoded_words else "[Could not generate]"
-                results.append(f"{predicted_masra}")
-                
-                # Use the predicted masra as input for next iteration
+
+                # 🚫 Stop if predicted masra is "ختم"
+                if predicted_masra.strip() == "ختم":
+                    break
+
+                results.append(predicted_masra)
                 current_input = predicted_masra
-                
-                # Stop if we couldn't generate anything meaningful
+
                 if predicted_masra == "[Could not generate]":
                     break
-        
+
         return "\n".join(results)
-    
+
     except Exception as e:
         return f"❌ Error during sequence prediction: {str(e)}"

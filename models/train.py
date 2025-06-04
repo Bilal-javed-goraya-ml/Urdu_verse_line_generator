@@ -80,10 +80,10 @@ def train_model():
     
     # Config
     emb_size = 512
-    hidden_size = 512
-    batch_size = 8
+    hidden_size = 256
+    batch_size = 16
     epochs = 100
-    lr = 0.0001
+    lr = 0.001
 
     # Load vocabulary and save to JSON
     vocab = Vocab()

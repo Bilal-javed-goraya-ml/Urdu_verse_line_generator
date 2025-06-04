@@ -35,50 +35,82 @@ def create_interface():
         gr.HTML("<hr>")
         
         # Sequence Prediction Tab
-        with gr.Tab("🔄 Sequence Prediction"):
-            with gr.Row():
-                with gr.Column(scale=2):
-                    seq_input = gr.Textbox(
-                        label="📝 Enter Initial Verse line",
-                        placeholder="یہاں اردو شعر کا پہلا مصرع لکھیں...",
-                        lines=2,
-                        rtl=True
-                    )
+        # with gr.Tab("🔄 Sequence Prediction"):
+        #     with gr.Row():
+        #         with gr.Column(scale=2):
+        #             seq_input = gr.Textbox(
+        #                 label="📝 Enter Initial Verse line",
+        #                 placeholder="یہاں اردو شعر کا پہلا مصرع لکھیں...",
+        #                 lines=2,
+        #                 rtl=True
+        #             )
 
-                    examples = gr.Examples(
-                        examples=[
-                            ["کالی کالی زلفوں کے پھندے نہ ڈالو"],
-                            ["بوتل کھلی ہے رقص میں جامِ شراب ہے"],
-                            ["بتا کیا پوچھتا ہے وہ"],
-                            ["لاجپال نبی میرے درد دا دوا دینا"],
-                        ],
-                        inputs=seq_input,
-                    )
+        #             examples = gr.Examples(
+        #                 examples=[
+        #                     ["کالی کالی زلفوں کے پھندے نہ ڈالو"],
+        #                     ["بوتل کھلی ہے رقص میں جامِ شراب ہے"],
+        #                     ["بتا کیا پوچھتا ہے وہ"],
+        #                     ["لاجپال نبی میرے درد دا دوا دینا"],
+        #                 ],
+        #                 inputs=seq_input,
+        #             )
 
-                    loop_count = gr.Slider(
-                        label="🔢 Number of Iterations",
-                        minimum=1,
-                        maximum=20,
-                        value=6,
-                        step=1,
-                        info="How many times to predict the next Verse line"
-                    )
-                    seq_btn = gr.Button("🔮 Generate Sequence", variant="primary")
+        #             loop_count = gr.Slider(
+        #                 label="🔢 Number of Iterations",
+        #                 minimum=1,
+        #                 maximum=50,
+        #                 value=6,
+        #                 step=1,
+        #                 info="How many times to predict the next Verse line"
+        #             )
+        #             seq_btn = gr.Button("🔮 Generate Sequence", variant="primary")
                 
-                with gr.Column(scale=2):
-                    seq_output = gr.Textbox(
-                        label="🎭 Generated Sequence",
-                        lines=10,
-                        rtl=True,
-                        interactive=False
-                    )
+        #         with gr.Column(scale=2):
+        #             seq_output = gr.Textbox(
+        #                 label="🎭 Generated Sequence",
+        #                 lines=10,
+        #                 rtl=True,
+        #                 interactive=False
+        #             )
             
-            seq_btn.click(
-                predict_sequence,
-                inputs=[seq_input, loop_count],
-                outputs=[seq_output]
-            )
-        
+        #     seq_btn.click(
+        #         predict_sequence,
+        #         inputs=[seq_input, loop_count],
+        #         outputs=[seq_output]
+        #     )
+        with gr.Row():
+            with gr.Column(scale=2):
+                seq_input = gr.Textbox(
+                    label="📝 Enter Initial Verse line",
+                    placeholder="یہاں اردو شعر کا پہلا مصرع لکھیں...",
+                    lines=2,
+                    rtl=True
+                )
+
+                examples = gr.Examples(
+                    examples=[
+                        ["کالی کالی زلفوں کے پھندے نہ ڈالو"],
+                        ["لاجپال نبی میرے درد دا دوا دینا"],
+                    ],
+                    inputs=seq_input,
+                )
+
+                seq_btn = gr.Button("🔮 Generate Sequence", variant="primary")
+
+            with gr.Column(scale=2):
+                seq_output = gr.Textbox(
+                    label="🎭 Generated Sequence",
+                    lines=20,
+                    rtl=True,
+                    interactive=False
+                )
+
+        # Remove loop_count from inputs
+        seq_btn.click(
+            predict_sequence,
+            inputs=[seq_input],
+            outputs=[seq_output]
+        )
         # Instructions
         with gr.Tab("📖 Instructions"):
             gr.Markdown("""
