@@ -111,43 +111,6 @@ def create_interface():
             inputs=[seq_input],
             outputs=[seq_output]
         )
-        # Instructions
-        with gr.Tab("📖 Instructions"):
-            gr.Markdown("""
-                ## How to Use
-            
-                ### 🔄 Sequence Prediction
-                1. Enter an initial Urdu poetry Verse line
-                2. Set the number of iterations (how many times to predict)
-                3. Click "Generate Sequence" to get a chain of predictions
-                4. Each output becomes the input for the next prediction
-                
-                ### 📝 Tips
-                - Make sure the model is trained first: `python main.py --mode train`
-                - Use proper Urdu text for better results
-                - The model works best with poetry patterns it has seen during training
-                
-                ### 🔧 Training Commands
-                ```bash
-                # Build dataset
-                python main.py --mode data-builder
-                
-                # Train model
-                python main.py --mode train
-                
-                # Interactive prediction (CLI)
-                python main.py --mode predict
-                
-                # Run web app
-                python app.py
-                ```
-            """)
-        
-        gr.HTML("""
-            <div style="text-align: center; margin-top: 20px; padding: 10px; color: #666;">
-                <small>Built with ❤️ for Urdu Poetry Generation</small>
-            </div>
-        """)
     
     return app
 
