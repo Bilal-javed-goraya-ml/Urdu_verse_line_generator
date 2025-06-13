@@ -70,7 +70,7 @@ python main.py --mode train
 ## 🔮 Predict from CLI
 
 ```bash
-python main.py --mode predict
+python models/predict.py
 ```
 
 You will be prompted to enter a verse line in Urdu. The model will generate the next line(s) interactively.
