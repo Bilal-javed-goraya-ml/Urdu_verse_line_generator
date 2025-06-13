@@ -3,10 +3,9 @@ import torch
 import torch.nn as nn
 import os
 import sys
-
 # Add utils to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
-from utils.vocab import Vocab
+from models.vocab import Vocab
 from models.train import Encoder, Decoder , LuongAttention
 from utils.load_model import predict_sequence , load_model
 

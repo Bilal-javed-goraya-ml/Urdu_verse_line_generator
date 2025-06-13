@@ -1,32 +1,21 @@
-import sys
 import os
+import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
-from utils.vocab import Vocab
+from models.vocab import Vocab
 from models.encoder_decoder import Encoder , Decoder ,LuongAttention
-import os
+from models.train_data import MasraDataset
+from utils.collate import pad_batch
+from utils.plot import plot_training_loss
+from utils.save_vocab import save_vocab_json
 import matplotlib.pyplot as plt
 import json
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-# Dataset
-class MasraDataset(Dataset):
-    def __init__(self, csv_path, vocab):
-        self.data = pd.read_csv(csv_path)
-        self.vocab = vocab
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, idx):
-        input_seq = self.vocab.encode(self.data.iloc[idx]['input'])
-        output_seq = self.vocab.encode(self.data.iloc[idx]['output'])
-        return torch.tensor(input_seq), torch.tensor(output_seq)
 
 
 # Training Function
@@ -89,64 +78,20 @@ def train_model():
         print(f"Epoch {epoch+1}/{epochs} | Loss: {avg_loss:.4f}")
 
     # Save model
-    os.makedirs("trained", exist_ok=True)
+    os.makedirs("trained_model", exist_ok=True)
     torch.save({
         "encoder": encoder.state_dict(), 
         "decoder": decoder.state_dict(),
         "vocab_size": len(vocab),
         "emb_size": emb_size,
         "hidden_size": hidden_size
-    }, "trained/model.pt")
+    }, "trained_model/model.pt")
     
     # Plot and save training loss
     plot_training_loss(training_losses)
     
-    print(" Model saved to trained/model.pt")
+    print(" Model saved to trained_model/model.pt")
     print(" Training completed!")
-
-# Collate Function for Padding
-def pad_batch(batch):
-    inputs, outputs = zip(*batch)
-    input_lens = [len(seq) for seq in inputs]
-    output_lens = [len(seq) for seq in outputs]
-
-    max_input_len = max(input_lens)
-    max_output_len = max(output_lens)
-
-    pad = lambda seqs, max_len: [torch.cat([s, torch.full((max_len - len(s),), 0)]) for s in seqs]
-
-    padded_inputs = torch.stack(pad(inputs, max_input_len))
-    padded_outputs = torch.stack(pad(outputs, max_output_len))
-    return padded_inputs.long(), padded_outputs.long()
-
-def save_vocab_json(vocab):
-    """Save vocabulary mappings to JSON files"""
-    os.makedirs("data", exist_ok=True)
-    
-    # Save word2idx
-    with open("data/word2idx.json", "w", encoding="utf-8") as f:
-        json.dump(vocab.word2idx, f, ensure_ascii=False, indent=2)
-    
-    # Save idx2word
-    with open("data/idx2word.json", "w", encoding="utf-8") as f:
-        json.dump(vocab.idx2word, f, ensure_ascii=False, indent=2)
-    
-    print(" Vocabulary saved to data/word2idx.json and data/idx2word.json")
-
-def plot_training_loss(losses):
-    """Plot and save training loss"""
-    os.makedirs("images", exist_ok=True)
-    
-    plt.figure(figsize=(10, 6))
-    plt.plot(range(1, len(losses) + 1), losses, 'b-', linewidth=2)
-    plt.title('Training Loss vs Epochs', fontsize=16)
-    plt.xlabel('Epochs', fontsize=12)
-    plt.ylabel('Loss', fontsize=12)
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig("images/training_loss.png", dpi=300, bbox_inches='tight')
-    plt.close()
-    print(" Training loss plot saved to images/training_loss.png")
 
 if __name__ == "__main__":
     train_model()

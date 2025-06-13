@@ -4,7 +4,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import torch
 from models.train import Encoder, Decoder
-from utils.vocab import Vocab
+from models.vocab import Vocab
 import sys
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -13,13 +13,16 @@ def predict_next_masra(input_text):
     vocab = Vocab()
     input_seq = torch.tensor(vocab.encode(input_text)).unsqueeze(0).to(device)
 
-    emb_size = 512
-    hidden_size = 512
+    # Load model
+    checkpoint = torch.load("trained_model/model.pt", map_location=device)
 
-    encoder = Encoder(len(vocab), emb_size, hidden_size).to(device)
-    decoder = Decoder(len(vocab), emb_size, hidden_size).to(device)
-
-    checkpoint = torch.load("trained/model.pt", map_location=device)
+    vocab_size = checkpoint["vocab_size"]
+    emb_size = checkpoint["emb_size"]
+    hidden_size = checkpoint["hidden_size"]
+        
+    encoder = Encoder(vocab_size, emb_size, hidden_size).to(device)
+    decoder = Decoder(vocab_size, emb_size, hidden_size).to(device)
+        
     encoder.load_state_dict(checkpoint["encoder"])
     decoder.load_state_dict(checkpoint["decoder"])
 

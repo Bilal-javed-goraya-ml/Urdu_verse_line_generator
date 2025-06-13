@@ -3,7 +3,7 @@ import sys
 import torch
 # Add utils to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), ".")))
-from utils.vocab import Vocab
+from models.vocab import Vocab
 from models.train import Encoder, Decoder , LuongAttention
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -17,19 +17,16 @@ def load_model():
     """Load the trained model"""
     global encoder, decoder, vocab
     
-    if not os.path.exists("trained/model.pt"):
-        return False, "❌ No trained model found. Please train the model first using: python main.py --mode train"
+    if not os.path.exists("trained_model/model.pt"):
+        return False, "No trained model found. Please train the model first using: python main.py --mode train"
     
     try:
         # Load vocabulary
         vocab = Vocab()
         
         # Load model
-        checkpoint = torch.load("trained/model.pt", map_location=device)
+        checkpoint = torch.load("trained_model/model.pt", map_location=device)
     
-        # vocab_size = len(vocab)
-        # emb_size = 512  # Default from training
-        # hidden_size = 512  # Default from training
         vocab_size = checkpoint["vocab_size"]
         emb_size = checkpoint["emb_size"]
         hidden_size = checkpoint["hidden_size"]
@@ -53,13 +50,13 @@ def load_model():
 #     global encoder, decoder, vocab
     
 #     if encoder is None or decoder is None or vocab is None:
-#         return "❌ Model not loaded. Please load the model first."
+#         return "Model not loaded. Please load the model first."
     
 #     if not input_text.strip():
-#         return "❌ Please enter a masra."
+#         return "Please enter a masra."
     
 #     if loop_count < 1:
-#         return "❌ Loop count must be at least 1."
+#         return "Loop count must be at least 1."
     
 #     try:
 #         results = []
@@ -101,7 +98,7 @@ def load_model():
 #         return "\n".join(results)
     
 #     except Exception as e:
-#         return f"❌ Error during sequence prediction: {str(e)}"
+#         return f" Error during sequence prediction: {str(e)}"
 
 
 def predict_sequence(input_text, max_length=50):
@@ -109,10 +106,10 @@ def predict_sequence(input_text, max_length=50):
     global encoder, decoder, vocab
 
     if encoder is None or decoder is None or vocab is None:
-        return "❌ Model not loaded. Please load the model first."
+        return " Model not loaded. Please load the model first."
 
     if not input_text.strip():
-        return "❌ Please enter a masra."
+        return "Please enter a masra."
 
     try:
         results = []
@@ -142,7 +139,7 @@ def predict_sequence(input_text, max_length=50):
 
                 predicted_masra = " ".join(decoded_words) if decoded_words else "[Could not generate]"
 
-                # 🚫 Stop if predicted masra is "ختم"
+                # Stop if predicted masra is "ختم"
                 if predicted_masra.strip() == "ختم":
                     break
 
@@ -155,4 +152,4 @@ def predict_sequence(input_text, max_length=50):
         return "\n".join(results)
 
     except Exception as e:
-        return f"❌ Error during sequence prediction: {str(e)}"
+        return f"Error during sequence prediction: {str(e)}"
